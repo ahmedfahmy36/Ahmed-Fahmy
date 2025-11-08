@@ -359,7 +359,8 @@
 
       <header class="h-screen flex items-center justify-center text-center">
         <div class="space-y-4 px-6" data-aos="fade-up">
-          <h1 class="text-5xl md:text-7xl font-bold typewriter-text">
+          <h1
+            class="text-4xl sm:text-5xl md:text-7xl font-bold typewriter-text inline-block">
             Hello, I'm <span class="text-violet-400">Ahmed Fahmy</span>
           </h1>
           <p class="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto">
@@ -871,60 +872,61 @@
       function closeMobileMenu() {
         mobileMenu.classList.add("hidden");
       }
-        const scrollUpBtn = document.getElementById('scrollUpBtn');
-        const progressRing = document.getElementById('progressRing');
-        const SHOW_THRESHOLD = 300; // Pixels to scroll down before the button appears
+      const scrollUpBtn = document.getElementById("scrollUpBtn");
+      const progressRing = document.getElementById("progressRing");
+      const SHOW_THRESHOLD = 300; // Pixels to scroll down before the button appears
 
-        /**
-         * Calculates the scroll progress and updates the visual ring.
-         */
-        function updateScrollProgress() {
-            // Document height minus viewport height is the maximum scrollable distance
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            const currentScroll = window.scrollY;
+      /**
+       * Calculates the scroll progress and updates the visual ring.
+       */
+      function updateScrollProgress() {
+        // Document height minus viewport height is the maximum scrollable distance
+        const maxScroll =
+          document.documentElement.scrollHeight - window.innerHeight;
+        const currentScroll = window.scrollY;
 
-            // Handle edge case where content is not scrollable (e.g., page is too short)
-            if (maxScroll <= 0) {
-                scrollUpBtn.classList.add('hidden-button');
-                return;
-            }
+        // Handle edge case where content is not scrollable (e.g., page is too short)
+        if (maxScroll <= 0) {
+          scrollUpBtn.classList.add("hidden-button");
+          return;
+        }
 
-            // Calculate progress as a percentage (0.0 to 1.0)
-            const progress = (currentScroll / maxScroll);
-            const angle = progress * 360; // Convert progress to degrees (0 to 360)
-            
-            // 1. Update Visibility
-            if (currentScroll > SHOW_THRESHOLD) {
-                scrollUpBtn.classList.remove('hidden-button');
-            } else {
-                scrollUpBtn.classList.add('hidden-button');
-            }
+        // Calculate progress as a percentage (0.0 to 1.0)
+        const progress = currentScroll / maxScroll;
+        const angle = progress * 360; // Convert progress to degrees (0 to 360)
 
-            // 2. Update Progress Ring using conic-gradient
-            // Color 1: Progress fill color (Indigo-800)
-            // Color 2: Track background color (Indigo-400)
-            progressRing.style.background = `conic-gradient(
+        // 1. Update Visibility
+        if (currentScroll > SHOW_THRESHOLD) {
+          scrollUpBtn.classList.remove("hidden-button");
+        } else {
+          scrollUpBtn.classList.add("hidden-button");
+        }
+
+        // 2. Update Progress Ring using conic-gradient
+        // Color 1: Progress fill color (Indigo-800)
+        // Color 2: Track background color (Indigo-400)
+        progressRing.style.background = `conic-gradient(
                 #3730a3 0deg, 
                 #3730a3 ${angle}deg, 
                 #818cf8 ${angle}deg, 
                 #818cf8 360deg
             )`;
-        }
+      }
 
-        /**
-         * Smoothly scrolls the window to the top.
-         */
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
+      /**
+       * Smoothly scrolls the window to the top.
+       */
+      function scrollToTop() {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
 
-        // Add event listeners for scroll changes and resize
-        window.addEventListener('scroll', updateScrollProgress);
-        window.addEventListener('load', updateScrollProgress);
-        window.addEventListener('resize', updateScrollProgress);
+      // Add event listeners for scroll changes and resize
+      window.addEventListener("scroll", updateScrollProgress);
+      window.addEventListener("load", updateScrollProgress);
+      window.addEventListener("resize", updateScrollProgress);
     </script>
   </body>
 </html>
