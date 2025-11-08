@@ -253,6 +253,32 @@
         object-fit: fill; /* Important: Ensures image fills the fixed dimensions without stretching the container */
       }
       /* END: PROJECT IMAGE FIXED DIMENSIONS CSS */
+
+    /* FIX: prevent unexpected horizontal overflow and constrain media */
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden; /* prevent page-level horizontal scrolling caused by outlying elements */
+      box-sizing: border-box;
+    }
+    *, *::before, *::after { box-sizing: inherit; }
+
+    img, video, iframe {
+      max-width: 100%;
+      height: auto;
+      display: block; /* remove inline gaps that can create overflow */
+    }
+
+    /* Prefer cover to fill so previews don't push layout */
+    .project-screen img {
+      object-fit: cover; /* safer on varied aspect ratios */
+    }
+
+    /* Make the typewriter safe on narrow screens */
+    @media (max-width: 640px) {
+      .typewriter-text {
+    
+      }
+    }
     </style>
   </head>
   <body class="text-gray-200">
