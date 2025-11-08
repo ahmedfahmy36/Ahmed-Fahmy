@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ahmed Fahmy | Front-End Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #0d1117; /* Dark background base color */
+        overflow-x: hidden; /* Prevent horizontal scroll from AOS or layout issues */
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      /* Custom scroll behavior for smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+      .scroll-progress-ring {
+        /* The ring wrapper - handles the shadow, size, and transitions */
+        position: relative;
+        width: 60px; /* Size of the container */
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        cursor: pointer;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -2px rgba(0, 0, 0, 0.1);
+      }
+
+      /* The inner button (core) - masks the center of the conic-gradient */
+      .scroll-progress-ring .inner-button {
+        width: 50px; /* Inner size */
+        height: 50px;
+        border-radius: 50%;
+        background-color: #4f46e5; /* Tailwind indigo-600 */
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        z-index: 10;
+      }
+
+      /* Initial state hidden (using CSS class to control visibility) */
+      .hidden-button {
+        opacity: 0;
+        transform: scale(0.8);
+        pointer-events: none;
+      }
+
+      .typewriter-text {
+        /* The text content is "Hello, I'm Ahmed Fahmy" - 18 characters. */
+        --char-count: 18;
+        --typing-speed: 2.5s; /* Faster typing speed for a crisper feel */
+        --typing-delay: 0.5s; /* Delay before starting to type */
+
+        overflow: hidden;
+        white-space: nowrap;
+        width: 0; /* Start with zero width */
+
+        /* The cursor style */
+        border-right: 0.1em solid #4c51bf; /* Violet color cursor */
+
+        /* Typing Animation */
+        animation: 
+        /* 1. Typing: Expands width over time */ typing
+            var(--typing-speed) steps(var(--char-count)) var(--typing-delay)
+            forwards,
+          /* 2. Cursor Blinking: Starts ONLY after typing is done + a brief pause (0.5s) */
+            blink-caret 0.7s step-end infinite
+            calc(var(--typing-speed) + var(--typing-delay) + 0.5s);
+      }
+
+      /* Keyframes for the typing effect: expand the width from 0 to the full character width */
+      @keyframes typing {
+        from {
+          width: 0;
+        }
+        to {
+          width: calc(var(--char-count) * 1ch);
+        }
+      }
+
+      /* Keyframes for the blinking cursor: hide and show the border */
+      @keyframes blink-caret {
+        from,
+        50% {
+          border-color: transparent;
+        }
+        50.1%,
+        to {
+          border-color: #4c51bf;
+        }
+      }
+
+      /* Small screen adjustments - KEEP these, they are good. */
+      @media (max-width: 640px) {
+        .typewriter-text {
+          font-size: 2rem;
+        }
+      }
+      /* * START: PURE CSS ANIMATED GRADIENT BACKGROUND STYLE */
+      #animated-background {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        opacity: 0.3; /* Subtle background */
+        pointer-events: none;
+
+        /* Initial large, soft gradient */
+        background: linear-gradient(-45deg, #1f2937, #5b21b6, #4c1d95, #0d1117);
+        background-size: 400% 400%; /* Make the gradient large for smooth shifts */
+        animation: GradientShift 20s ease infinite;
+      }
+
+      @keyframes GradientShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+      /* END: PURE CSS ANIMATED GRADIENT BACKGROUND STYLE */
+
+      /* * START: SKILLS TIMELINE CSS - FIXED FOR GSAP */
+      .timeline-container {
+        position: relative;
+        max-width: 1000px;
+        margin: 0 auto;
+        /* SET CUSTOM PROPERTY START STATE for GSAP to animate */
+        --line-height: 0%;
+      }
+
+      /* The actual timeline vertical line */
+      .timeline-container::after {
+        content: "";
+        position: absolute;
+        width: 4px;
+        background-color: #5b21b6; /* Violet */
+        top: 0;
+        /* Use the CSS variable for height - GSAP will update this */
+        height: var(--line-height);
+        /* The original 'bottom: 0;' was removed to allow for height animation */
+        left: 50%;
+        margin-left: -2px;
+        z-index: -1;
+        border-radius: 9999px;
+        /* REMOVE any CSS transition on height or GSAP will conflict */
+      }
+
+      /* Individual timeline item container */
+      .timeline-item {
+        padding: 10px 40px;
+        position: relative;
+        width: 50%;
+      }
+
+      /* Placement on the left side of the line */
+      .timeline-item.left {
+        left: 0;
+      }
+
+      /* Placement on the right side of the line */
+      .timeline-item.right {
+        left: 50%;
+      }
+
+      /* Dot on the timeline */
+      .timeline-item::after {
+        content: "";
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        right: -8px;
+        background-color: #5b21b6;
+        border: 3px solid #0d1117; /* Matches body background */
+        top: 30px;
+        border-radius: 50%;
+        z-index: 1;
+      }
+
+      /* Correct dot position for right side */
+      .timeline-item.right::after {
+        left: -8px;
+      }
+
+      .timeline-content {
+        padding: 20px 30px;
+        background-color: rgba(31, 41, 55, 0.7);
+        border: 1px solid rgba(91, 33, 182, 0.4); /* Subtle border matching accent */
+        position: relative;
+        border-radius: 0.75rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Responsive adjustments for mobile */
+      @media screen and (max-width: 768px) {
+        /* Make the line vertical on the far left */
+        .timeline-container::after {
+          left: 10px;
+        }
+        /* Items take full width and are placed on the left */
+        .timeline-item {
+          width: 100%;
+          padding-left: 50px; /* Space for the line and dot */
+          padding-right: 10px;
+        }
+        /* Reset dot positions for mobile */
+        .timeline-item::after {
+          left: 3px; /* Align dot to the new left line position */
+          top: 20px;
+        }
+        /* Ensure right-side items also have the dot on the left */
+        .timeline-item.right {
+          left: 0%;
+        }
+        /* Ensure right-side items also have the dot on the left */
+        .timeline-item.right::after {
+          left: 3px;
+        }
+      }
+      /* END: SKILLS TIMELINE CSS */
+
+      /* * START: PROJECT IMAGE FIXED DIMENSIONS CSS */
+      .project-screen {
+        /* Fixed height for display consistency */
+        height: 350px;
+      }
+      .project-screen img {
+        border-radius: 5px;
+        width: 100%;
+        height: 100%;
+        object-fit: fill; /* Important: Ensures image fills the fixed dimensions without stretching the container */
+      }
+      /* END: PROJECT IMAGE FIXED DIMENSIONS CSS */
+    </style>
+  </head>
+  <body class="text-gray-200">
+    <div id="animated-background"></div>
+
+    <div class="relative z-10">
+      <nav
+        class="sticky top-0 left-0 right-0 z-50 bg-gray-900 bg-opacity-70 backdrop-blur-sm shadow-md transition-colors duration-300"
+      >
+        <div
+          class="container mx-auto flex justify-between items-center py-4 px-6"
+        >
+          <div class="text-2xl font-bold text-violet-400">
+            <a href="/"> Ahmed Fahmy </a>
+          </div>
+
+          <div class="hidden md:flex space-x-8" id="desktop-menu">
+            <a
+              href="#about"
+              class="text-white hover:text-violet-400 transition-colors duration-300 cursor-pointer"
+              >About</a
+            >
+            <a
+              href="#experience"
+              class="text-white hover:text-violet-400 transition-colors duration-300 cursor-pointer"
+              >Experience</a
+            >
+            <a
+              href="#skills"
+              class="text-white hover:text-violet-400 transition-colors duration-300 cursor-pointer"
+              >Skills</a
+            >
+            <a
+              href="#projects"
+              class="text-white hover:text-violet-400 transition-colors duration-300 cursor-pointer"
+              >Projects</a
+            >
+            <a
+              href="#contact"
+              class="text-white hover:text-violet-400 transition-colors duration-300 cursor-pointer"
+              >Contact</a
+            >
+            <a
+              href="/Ahmed Mohamed Fahmy.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-white hover:text-violet-400 transition-colors duration-300 cursor-pointer"
+              >CV</a
+            >
+          </div>
+
+          <button
+            id="mobile-menu-button"
+            class="md:hidden text-white focus:outline-none"
+            aria-label="Toggle menu"
+          >
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden pb-4">
+          <div class="flex flex-col space-y-2 px-6">
+            <a
+              href="#about"
+              class="text-white hover:text-violet-400 py-2 transition-colors duration-300 cursor-pointer"
+              onclick="closeMobileMenu()"
+              >About</a
+            >
+            <a
+              href="#experience"
+              class="text-white hover:text-violet-400 py-2 transition-colors duration-300 cursor-pointer"
+              onclick="closeMobileMenu()"
+              >Experience</a
+            >
+            <a
+              href="#skills"
+              class="text-white hover:text-violet-400 py-2 transition-colors duration-300 cursor-pointer"
+              onclick="closeMobileMenu()"
+              >Skills</a
+            >
+            <a
+              href="#projects"
+              class="text-white hover:text-violet-400 py-2 transition-colors duration-300 cursor-pointer"
+              onclick="closeMobileMenu()"
+              >Projects</a
+            >
+            <a
+              href="#contact"
+              class="text-white hover:text-violet-400 py-2 transition-colors duration-300 cursor-pointer"
+              onclick="closeMobileMenu()"
+              >Contact</a
+            >
+            <a
+              href="Ahmed Mohamed Fahmy.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-white hover:text-violet-400 py-2 transition-colors duration-300 cursor-pointer"
+              onclick="closeMobileMenu()"
+              >CV</a
+            >
+          </div>
+        </div>
+      </nav>
+
+      <header class="h-screen flex items-center justify-center text-center">
+        <div class="space-y-4 px-6" data-aos="fade-up">
+          <h1 class="text-5xl md:text-7xl font-bold typewriter-text">
+            Hello, I'm <span class="text-violet-400">Ahmed Fahmy</span>
+          </h1>
+          <p class="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto">
+            A dedicated Front-End Developer specializing in building beautiful
+            and functional web applications.
+          </p>
+          <!-- DOWNLOAD CV BUTTON ADDED HERE -->
+          <a
+            href="/Ahmed Mohamed Fahmy.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-8 inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-white bg-violet-600 hover:bg-violet-700 md:py-4 md:text-lg md:px-10 transition-all duration-300 shadow-lg hover:shadow-violet-500/50 transform hover:scale-[1.02]"
+          >
+            <i class="fas fa-download mr-3"></i>
+            Download My CV
+          </a>
+          <!-- END DOWNLOAD CV BUTTON -->
+        </div>
+      </header>
+
+      <section id="about" class="py-20 md:py-32 container mx-auto px-6">
+        <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
+          <h2 class="text-4xl md:text-5xl font-bold mb-8">About Me</h2>
+          <p class="text-lg md:text-xl text-gray-300 leading-relaxed">
+            Frontend Developer specializing in React, Angular and modern
+            JavaScript frameworks with strong skills in clean architecture,
+            state management, and responsive UI. Experienced in building
+            scalable web apps with robust code structures and seamless API
+            integrations. Passionate about clean code, user experience, and
+            learning cutting-edge technologies. Proven ability to deliver
+            production-grade projects in both cooperate and freelance
+            environments.
+          </p>
+        </div>
+      </section>
+
+      <section
+        id="experience"
+        class="py-20 md:py-32 container mx-auto px-6 bg-opacity-50"
+      >
+        <div class="text-center" data-aos="fade-up">
+          <h2 class="text-4xl md:text-5xl font-bold mb-12">
+            Professional Experience
+          </h2>
+        </div>
+
+        <div class="grid gap-12 max-w-5xl mx-auto">
+          <div
+            class="bg-gray-900 p-6 md:p-8 rounded-xl shadow-2xl hover:shadow-violet-500/30 transition-shadow duration-300"
+            data-aos="fade-up"
+          >
+            <div
+              class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4"
+            >
+              <h3 class="text-2xl font-bold text-violet-400">
+                Front-End Developer
+              </h3>
+              <span class="text-sm text-gray-400 mt-1 md:mt-0"
+                >May 2024 - Present (Full-time)</span
+              >
+            </div>
+            <div class="text-lg text-gray-300 mb-4">
+              <span class="font-semibold text-white">Intrazero</span>, Egypt
+            </div>
+            <ul class="list-disc list-inside space-y-2 text-gray-400 ml-4">
+              <li>
+                Developed and maintained the company's core website using React,
+                Next.js, and SCSS, ensuring optimal performance, responsiveness,
+                and accessibility.
+              </li>
+              <li>
+                Improved legacy codebases by fixing bugs, refactoring UI
+                components, and aligning UX with modern standards.
+              </li>
+              <li>
+                Collaborated with design and backend teams to integrate APIs and
+                boost SEO using SSR and optimized routing.
+              </li>
+            </ul>
+          </div>
+
+          <div
+            class="bg-gray-900 p-6 md:p-8 rounded-xl shadow-2xl hover:shadow-violet-500/30 transition-shadow duration-300"
+            data-aos="fade-up"
+          >
+            <div
+              class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4"
+            >
+              <h3 class="text-2xl font-bold text-violet-400">
+                Front-End Developer
+              </h3>
+              <span class="text-sm text-gray-400 mt-1 md:mt-0"
+                >May 2023 - September 2023 (Freelancing)</span
+              >
+            </div>
+            <div class="text-lg text-gray-300 mb-4">
+              <span class="font-semibold text-white">Takamol</span>, Egypt
+            </div>
+            <ul class="list-disc list-inside space-y-2 text-gray-400 ml-4">
+              <li>
+                Led the frontend development of an Uber-like transportation
+                application, focusing on high-performance and real-time tracking
+                features.
+              </li>
+              <li>
+                Implemented a robust user registration system with advanced
+                validation and integrated a strong structure for payment
+                integration.
+              </li>
+              <li>
+                Ensured data accuracy, security, and a seamless user experience
+                across the application.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="skills" class="py-20 md:py-32">
+        <div class="container mx-auto px-6 text-center" data-aos="fade-up">
+          <h2 class="text-4xl md:text-5xl font-bold mb-12">
+            My Front-End Skills
+          </h2>
+        </div>
+
+        <div class="timeline-container mt-12">
+          <div class="timeline-item left" data-aos="fade-right">
+            <div class="timeline-content text-left">
+              <h3 class="text-2xl font-semibold text-violet-400 mb-2">
+                Foundation
+              </h3>
+              <p class="text-gray-300">HTML5, CSS3</p>
+              <span class="text-sm text-gray-400 mt-2 block"
+                >Building the structure and styling the fundamental elements of
+                web pages.</span
+              >
+            </div>
+          </div>
+
+          <div class="timeline-item right" data-aos="fade-left">
+            <div class="timeline-content text-left">
+              <h3 class="text-2xl font-semibold text-violet-400 mb-2">
+                Styling Frameworks
+              </h3>
+              <p class="text-gray-300">Bootstrap, Tailwind CSS</p>
+              <span class="text-sm text-gray-400 mt-2 block"
+                >Accelerating development with utility-first and component-based
+                CSS frameworks.</span
+              >
+            </div>
+          </div>
+
+          <div class="timeline-item left" data-aos="fade-right">
+            <div class="timeline-content text-left">
+              <h3 class="text-2xl font-semibold text-violet-400 mb-2">
+                Programming Logic
+              </h3>
+              <p class="text-gray-300">JavaScript (ES6+), TypeScript</p>
+              <span class="text-sm text-gray-400 mt-2 block"
+                >Implementing dynamic behavior and ensuring type safety across
+                the application.</span
+              >
+            </div>
+          </div>
+
+          <div class="timeline-item right" data-aos="fade-left">
+            <div class="timeline-content text-left">
+              <h3 class="text-2xl font-semibold text-violet-400 mb-2">
+                Advanced Frontend
+              </h3>
+              <p class="text-gray-300">React.js, React.ts, Angular, Next.js</p>
+              <span class="text-sm text-gray-400 mt-2 block"
+                >Expertise in leading libraries and full-stack frameworks for
+                complex, modern applications.</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="projects" class="py-20 md:py-32 container mx-auto px-6">
+        <div class="text-center" data-aos="fade-up">
+          <h2 class="text-4xl md:text-5xl font-bold mb-12">My Projects</h2>
+        </div>
+
+        <div
+          id="project1"
+          class="flex flex-col md:flex-row items-center gap-12 mb-20 md:mb-32"
+          data-aos="fade-up"
+        >
+          <div class="w-full md:w-1/2">
+            <a
+              href="https://ahmedfahmy36.github.io/Starwarsgeek/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-violet-400 transition-colors duration-300 block"
+            >
+              <h3 class="text-3xl md:text-4xl font-bold mb-4">Starwarsgeek</h3>
+            </a>
+            <p class="text-lg text-gray-300 leading-relaxed">
+              A StarWars movies website that uses SWAPI to display star wars
+              information as characters, films, planets, vehicles, species and
+              spaceships for the fans of star wars universe developed with fun
+              design for star wars geeks!.
+            </p>
+            <p class="text-sm text-gray-400 mt-2">
+              <strong class="text-violet-300">Technologies:</strong> REACT.JS,
+              CSS, Bootstrap, JavaScript
+            </p>
+          </div>
+          <div class="w-full md:w-1/2 flex justify-center">
+            <a
+              href="https://ahmedfahmy36.github.io/Starwarsgeek/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="rounded-xl shadow-2xl relative w-full max-w-[600px] h-[350px] flex items-center justify-center border-4 border-violet-500/50 hover:shadow-violet-500/50"
+            >
+              <div class="project-screen w-full h-full">
+                <img src="Starwars.png" alt="Project 1 Preview" />
+              </div>
+              <div class=""></div>
+            </a>
+          </div>
+        </div>
+
+        <div
+          id="project2"
+          class="flex flex-col md:flex-row-reverse items-center gap-12 mb-20 md:mb-32"
+          data-aos="fade-up"
+        >
+          <div class="w-full md:w-1/2">
+            <a
+              href="https://www.intrazero.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-violet-400 transition-colors duration-300 block"
+            >
+              <h3 class="text-3xl md:text-4xl font-bold mb-4">
+                Intrazero Company Website
+              </h3>
+            </a>
+            <p class="text-lg text-gray-300 leading-relaxed">
+              As a core responsibility, I developed and maintained the main
+              company website, focusing on a responsive, high-performance user
+              experience. I implemented complex UI/UX designs and ensured strong
+              SEO practices were followed using Server-Side Rendering (SSR).
+            </p>
+            <p class="text-sm text-gray-400 mt-2">
+              <strong class="text-violet-300">Technologies:</strong> Next.js,
+              React, TypeScript, SCSS, API Integration
+            </p>
+          </div>
+          <div class="w-full md:w-1/2 flex justify-center">
+            <a
+              href="https://www.intrazero.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="rounded-xl shadow-2xl relative w-full max-w-[600px] h-[350px] flex items-center justify-center border-4 border-violet-500/50 hover:shadow-violet-500/50"
+            >
+              <div class="w-full h-full project-screen">
+                <img src="intrazero.png" alt="Intrazero website Preview" />
+              </div>
+              <div
+                class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[70%] h-4 bg-gray-700 rounded-b-xl"
+              ></div>
+            </a>
+          </div>
+        </div>
+
+        <div
+          id="project3"
+          class="flex flex-col md:flex-row items-center gap-12 mb-20 md:mb-32"
+          data-aos="fade-up"
+        >
+          <div class="w-full md:w-1/2">
+            <a
+              href="https://ahmedfahmy36.github.io/Noxe/home"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-violet-400 transition-colors duration-300 block"
+            >
+              <h3 class="text-3xl md:text-4xl font-bold mb-4">
+                Noxe Movie Stream Website
+              </h3>
+            </a>
+            <p class="text-lg text-gray-300 leading-relaxed">
+              A comprehensive online library of trending movies, series, and
+              actors. This website integrates with a live API to fetch updated
+              content and display features like ratings, similar to platforms
+              like IMDB.
+            </p>
+            <p class="text-sm text-gray-400 mt-2">
+              <strong class="text-violet-300">Technologies:</strong> HTML, CSS,
+              Bootstrap, JavaScript, Angular
+            </p>
+          </div>
+          <div class="w-full md:w-1/2 flex justify-center">
+            <a
+              href="https://ahmedfahmy36.github.io/Noxe/home"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="rounded-xl shadow-2xl relative w-full max-w-[600px] h-[350px] flex items-center justify-center border-4 border-violet-500/50 hover:shadow-violet-500/50"
+            >
+              <div class="w-full h-full project-screen">
+                <img src="noxe.png" alt="Noxe Movie Stream Preview" />
+              </div>
+              <div></div>
+            </a>
+          </div>
+        </div>
+
+        <div
+          id="project4"
+          class="flex flex-col md:flex-row-reverse items-center gap-12 mb-20 md:mb-32"
+          data-aos="fade-up"
+        >
+          <div class="w-full md:w-1/2">
+            <a
+              href="https://ahmedfahmy36.github.io/SVOIMDB/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hover:text-violet-400 transition-colors duration-300 block"
+            >
+              <h3 class="text-3xl md:text-4xl font-bold mb-4">SVOIMDB</h3>
+            </a>
+            <p class="text-lg text-gray-300 leading-relaxed">
+              A dynamic online movie and series library, integrating with the
+              TMDB API to display trending content and ratings. The front-end
+              was built as a performant Single-Page Application (SPA).
+            </p>
+            <p class="text-sm text-gray-400 mt-2">
+              <strong class="text-violet-300">Technologies:</strong> HTML, CSS,
+              Tailwind CSS, JavaScript, React.js, Vite
+            </p>
+          </div>
+          <div class="w-full md:w-1/2 flex justify-center">
+            <a
+              href="https://ahmedfahmy36.github.io/SVOIMDB/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="rounded-xl shadow-2xl relative w-full max-w-[600px] h-[350px] flex items-center justify-center border-4 border-violet-500/50 hover:shadow-violet-500/50"
+            >
+              <div class="h-full w-full project-screen">
+                <img src="SVOIMDB.png" alt="SVOIMDB Preview" />
+              </div>
+              <div class=""></div>
+            </a>
+          </div>
+        </div>
+
+        <div
+          id="project5"
+          class="flex flex-col md:flex-row items-center gap-12 mb-20 md:mb-32"
+          data-aos="fade-up"
+        >
+          <div class="w-full md:w-1/2">
+            <h3 class="text-3xl md:text-4xl font-bold mb-4 text-violet-400">
+              3Brothers
+            </h3>
+            <p class="text-lg text-gray-300 leading-relaxed">
+              At Intrazero, Executed the full frontend build for a corporate
+              data show site, featuring a responsive design and an interactive,
+              filterable product catalog based on technical specifications,
+              engineered asynchronous form submissions (AJAX) for distributor
+              and client lead generation, facilitating a fast, non-disruptive
+              user flow, Developed and secured a robust sign-in system
+              incorporating client-side validation for authorized access
+              management.
+            </p>
+            <p class="text-sm text-gray-400 mt-2">
+              <strong class="text-violet-300">Technologies:</strong> HTML, CSS,
+              Bootstrap, JavaScript, Ajax , PHP, Laravel
+            </p>
+          </div>
+          <div class="w-full md:w-1/2 flex justify-center">
+            <a
+              href="https://awww.3-brothers.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="rounded-xl shadow-2xl relative w-full max-w-[600px] h-[350px] flex items-center justify-center border-4 border-violet-500/50 hover:shadow-violet-500/50"
+            >
+              <div class="h-full w-full project-screen">
+                <img src="3brothers.png" alt="3brothers Preview" />
+              </div>
+              <div class=""></div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="contact"
+        class="py-20 md:py-32 container mx-auto px-6 bg-gray-800 bg-opacity-50"
+      >
+        <div class="text-center" data-aos="fade-up">
+          <h2 class="text-4xl md:text-5xl font-bold mb-12">Get in Touch</h2>
+          <p class="text-lg text-gray-300 max-w-2xl mx-auto mb-10">
+            I'm currently seeking new opportunities and open to connecting with
+            fellow developers. Feel free to reach out!
+          </p>
+
+          <div class="flex justify-center space-x-8 md:space-x-12">
+            <a
+              href="mailto:ahmedfahmy900122@gmail.com"
+              class="text-gray-400 hover:text-violet-400 transition-transform duration-300 transform hover:scale-110"
+              title="Email Me"
+            >
+              <i class="fas fa-envelope text-4xl md:text-5xl"></i>
+              <span class="sr-only">Email</span>
+            </a>
+
+            <a
+              href="https://www.linkedin.com/in/ahmed-mohamed-6956b9195"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-gray-400 hover:text-violet-400 transition-transform duration-300 transform hover:scale-110"
+              title="My LinkedIn Profile"
+            >
+              <i class="fab fa-linkedin-in text-4xl md:text-5xl"></i>
+              <span class="sr-only">LinkedIn</span>
+            </a>
+
+            <a
+              href="tel:01122764488"
+              class="text-gray-400 hover:text-violet-400 transition-transform duration-300 transform hover:scale-110"
+              title="Call Me"
+            >
+              <i class="fas fa-phone-alt text-4xl md:text-5xl"></i>
+              <span class="sr-only">Phone</span>
+            </a>
+          </div>
+        </div>
+      </section>
+      <button
+        id="scrollUpBtn"
+        class="scroll-progress-ring hidden-button fixed bottom-8 right-8 z-50 transition-all active:scale-95"
+        onclick="scrollToTop()"
+      >
+        <!-- The visual progress ring, updated by JS -->
+        <div
+          id="progressRing"
+          class="scroll-progress-ring absolute inset-0 rounded-full"
+          style="--progress: 0deg"
+        ></div>
+
+        <!-- The inner button core with the arrow icon -->
+        <div class="inner-button">
+          <!-- Icon for up arrow (Lucide icon equivalent using SVG) -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 19V5" />
+            <path d="m5 12 7-7 7 7" />
+          </svg>
+        </div>
+      </button>
+      <footer
+        class="py-8 bg-gray-900 bg-opacity-70 text-center text-gray-500 text-sm border-t border-gray-700"
+      >
+        <p>&copy; 2025 Ahmed Fahmy. All Rights Reserved.</p>
+      </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+    <script>
+      // 1. Initialize AOS
+      AOS.init({
+        duration: 1000,
+        once: true,
+      });
+
+      // 2. Register GSAP ScrollTrigger plugin
+      gsap.registerPlugin(ScrollTrigger);
+
+      // 3. Timeline Animation Logic (The Fix)
+      gsap.to(".timeline-container", {
+        // Animate the CSS variable from 0% (default in CSS) to 100%
+        "--line-height": "100%",
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".timeline-container",
+          // Start when the top of the container hits the center of the viewport
+          start: "top center",
+          // End when the bottom of the container hits the center of the viewport
+          end: "bottom center",
+          scrub: true, // Links the animation directly to the scroll position
+        },
+      });
+
+      // 4. Mobile Menu Toggle Logic
+      const mobileMenuButton = document.getElementById("mobile-menu-button");
+      const mobileMenu = document.getElementById("mobile-menu");
+
+      mobileMenuButton.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+      });
+
+      function closeMobileMenu() {
+        mobileMenu.classList.add("hidden");
+      }
+        const scrollUpBtn = document.getElementById('scrollUpBtn');
+        const progressRing = document.getElementById('progressRing');
+        const SHOW_THRESHOLD = 300; // Pixels to scroll down before the button appears
+
+        /**
+         * Calculates the scroll progress and updates the visual ring.
+         */
+        function updateScrollProgress() {
+            // Document height minus viewport height is the maximum scrollable distance
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const currentScroll = window.scrollY;
+
+            // Handle edge case where content is not scrollable (e.g., page is too short)
+            if (maxScroll <= 0) {
+                scrollUpBtn.classList.add('hidden-button');
+                return;
+            }
+
+            // Calculate progress as a percentage (0.0 to 1.0)
+            const progress = (currentScroll / maxScroll);
+            const angle = progress * 360; // Convert progress to degrees (0 to 360)
+            
+            // 1. Update Visibility
+            if (currentScroll > SHOW_THRESHOLD) {
+                scrollUpBtn.classList.remove('hidden-button');
+            } else {
+                scrollUpBtn.classList.add('hidden-button');
+            }
+
+            // 2. Update Progress Ring using conic-gradient
+            // Color 1: Progress fill color (Indigo-800)
+            // Color 2: Track background color (Indigo-400)
+            progressRing.style.background = `conic-gradient(
+                #3730a3 0deg, 
+                #3730a3 ${angle}deg, 
+                #818cf8 ${angle}deg, 
+                #818cf8 360deg
+            )`;
+        }
+
+        /**
+         * Smoothly scrolls the window to the top.
+         */
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Add event listeners for scroll changes and resize
+        window.addEventListener('scroll', updateScrollProgress);
+        window.addEventListener('load', updateScrollProgress);
+        window.addEventListener('resize', updateScrollProgress);
+    </script>
+  </body>
+</html>
